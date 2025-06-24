@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゲーム広告動画絵コンテ作成アプリ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(253, 121, 168, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.4);
+        }
+
+        .storyboard-container {
+            padding: 30px;
+            min-height: 400px;
+        }
+
+        .cut-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .cut-item:hover {
+            border-color: #74b9ff;
+            box-shadow: 0 8px 25px rgba(116, 185, 255, 0.15);
+        }
+
+        .cut-header {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cut-number {
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .cut-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-danger {
+            background: #e17055;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d63031;
+            transform: scale(1.05);
+        }
+
+        .btn-move {
+            background: #fdcb6e;
+            color: #2d3436;
+        }
+
+        .btn-move:hover {
+            background: #f39c12;
+            transform: scale(1.05);
+        }
+
+        .cut-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 25px;
+        }
+
+        .image-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .image-upload {
+            border: 3px dashed #74b9ff;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(145deg, #f8f9ff, #e8f4fd);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-upload:hover {
+            border-color: #0984e3;
+            background: linear-gradient(145deg, #e8f4fd, #d1ecf1);
+            transform: translateY(-2px);
+        }
+
+        .image-upload.has-image {
+            padding: 0;
+            border: none;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .upload-text {
+            color: #74b9ff;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-weight: 700;
+            color: #2d3436;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input, .form-textarea {
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #74b9ff;
+            box-shadow: 0 0 0 3px rgba(116, 185, 255, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #636e72;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #2d3436;
+        }
+
+        .export-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .cut-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+        }
+
+        .save-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #00b894;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .save-indicator.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 ゲーム広告動画絵コンテ</h1>
+            <p>プロフェッショナルな絵コンテを簡単作成</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="addCut()">
+                ➕ 新しいカットを追加
+            </button>
+            <button class="btn btn-secondary" onclick="exportData()">
+                💾 データ保存
+            </button>
+            <button class="btn btn-success" onclick="importData()">
+                📁 データ読み込み
+            </button>
+            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImport(event)">
+        </div>
+
+        <div class="storyboard-container" id="storyboard">
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                </svg>
+                <h3>絵コンテを始めましょう</h3>
+                <p>「新しいカットを追加」ボタンをクリックして最初のカットを作成してください</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="save-indicator" id="saveIndicator">
+        💾 自動保存しました
+    </div>
+
+    <script>
+        let cuts = [];
+        let cutCounter = 0;
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            updateDisplay();
+        });
+
+        // カット追加
+        function addCut() {
+            cutCounter++;
+            const cut = {
+                id: cutCounter,
+                image: null,
+                dialogue: '',
+                materials: '',
+                memo: ''
+            };
+            cuts.push(cut);
+            updateDisplay();
+            saveData();
+        }
+
+        // カット削除
+        function deleteCut(id) {
+            if (confirm('このカットを削除しますか？')) {
+                cuts = cuts.filter(cut => cut.id !== id);
+                updateDisplay();
+                saveData();
+            }
+        }
+
+        // カット移動
+        function moveCut(id, direction) {
+            const index = cuts.findIndex(cut => cut.id === id);
+            if (index === -1) return;
+
+            const newIndex = direction === 'up' ? index - 1 : index + 1;
+            if (newIndex < 0 || newIndex >= cuts.length) return;
+
+            [cuts[index], cuts[newIndex]] = [cuts[newIndex], cuts[index]];
+            updateDisplay();
+            saveData();
+        }
+
+        // 画像アップロード
+        function handleImageUpload(event, cutId) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const cut = cuts.find(c => c.id === cutId);
+                if (cut) {
+                    cut.image = e.target.result;
+                    updateDisplay();
+                    saveData();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // テキスト更新
+        function updateText(cutId, field, value) {
+            const cut = cuts.find(c => c.id === cutId);
+            if (cut) {
+                cut[field] = value;
+                saveData();
+            }
+        }
+
+        // 表示更新
+        function updateDisplay() {
+            const container = document.getElementById('storyboard');
+            
+            if (cuts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+                        <h3>絵コンテを始めましょう</h3>
+                        <p>「新しいカットを追加」ボタンをクリックして最初のカットを作成してください</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = cuts.map((cut, index) => `
+                <div class="cut-item">
+                    <div class="cut-header">
+                        <div class="cut-number">カット ${index + 1}</div>
+                        <div class="cut-actions">
+                            ${index > 0 ? `<button class="btn-small btn-move" onclick="moveCut(${cut.id}, 'up')">↑</button>` : ''}
+                            ${index < cuts.length - 1 ? `<button class="btn-small btn-move" onclick="moveCut(${cut.id}, 'down')">↓</button>` : ''}
+                            <button class="btn-small btn-danger" onclick="deleteCut(${cut.id})">削除</button>
+                        </div>
+                    </div>
+                    <div class="cut-content">
+                        <div class="image-section">
+                            <div class="image-upload ${cut.image ? 'has-image' : ''}" onclick="document.getElementById('imageInput${cut.id}').click()">
+                                ${cut.image ? 
+                                    `<img src="${cut.image}" alt="参考画像" class="image-preview">` :
+                                    `<div class="upload-text">📷 画像をアップロード<br><small>クリックして画像を選択</small></div>`
+                                }
+                            </div>
+                            <input type="file" id="imageInput${cut.id}" accept="image/*" style="display: none;" onchange="handleImageUpload(event, ${cut.id})">
+                        </div>
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label class="form-label">💬 セリフ・ナレーション</label>
+                                <textarea 
+                                    class="form-textarea" 
+                                    placeholder="セリフやナレーションを入力..."
+                                    value="${cut.dialogue}"
+                                    onchange="updateText(${cut.id}, 'dialogue', this.value)"
+                                >${cut.dialogue}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">🎨 使用素材・エフェクト</label>
+                                <input 
+                                    type="text" 
+                                    class="form-input" 
+                                    placeholder="キャラクター、背景、エフェクトなど..."
+                                    value="${cut.materials}"
+                                    onchange="updateText(${cut.id}, 'materials', this.value)"
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">📝 メモ・演出指示</label>
+                                <textarea 
+                                    class="form-textarea" 
+                                    placeholder="カメラワーク、タイミング、その他の指示..."
+                                    value="${cut.memo}"
+                                    onchange="updateText(${cut.id}, 'memo', this.value)"
+                                >${cut.memo}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // データ保存
+        function saveData() {
+            const data = {
+                cuts: cuts,
+                cutCounter: cutCounter,
+                savedAt: new Date().toISOString()
+            };
+            
+            // ブラウザのセッションストレージに保存
+            try {
+                sessionStorage.setItem('storyboardData', JSON.stringify(data));
+                showSaveIndicator();
+            } catch (e) {
+                console.error('保存に失敗しました:', e);
+            }
+        }
+
+        // データ読み込み
+        function loadData() {
+            try {
+                const saved = sessionStorage.getItem('storyboardData');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    cuts = data.cuts || [];
+                    cutCounter = data.cutCounter || 0;
+                }
+            } catch (e) {
+                console.error('データの読み込みに失敗しました:', e);
+            }
+        }
+
+        // 保存インジケーター表示
+        function showSaveIndicator() {
+            const indicator = document.getElementById('saveIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        // データエクスポート
+        function exportData() {
+            const data = {
+                cuts: cuts,
+                cutCounter: cutCounter,
+                exportedAt: new Date().toISOString(),
+                projectName: prompt('プロジェクト名を入力してください:', 'ゲーム広告絵コンテ') || 'ゲーム広告絵コンテ'
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${data.projectName}_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // データインポート
+        function importData() {
+            document.getElementById('importFile').click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.cuts && Array.isArray(data.cuts)) {
+                        if (confirm('現在のデータを上書きしますか？')) {
+                            cuts = data.cuts;
+                            cutCounter = data.cutCounter || cuts.length;
+                            updateDisplay();
+                            saveData();
+                            alert('データを読み込みました！');
+                        }
+                    } else {
+                        alert('無効なファイル形式です。');
+                    }
+                } catch (error) {
+                    alert('ファイルの読み込みに失敗しました。');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 定期的な自動保存
+        setInterval(function() {
+            if (cuts.length > 0) {
+                saveData();
+            }
+        }, 30000); // 30秒ごと
+    </script>
+</body>
+</html>
